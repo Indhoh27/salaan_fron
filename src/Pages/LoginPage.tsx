@@ -12,7 +12,7 @@ const inputClass =
 export default function LoginPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading, error, user, restorePending } = useAppSelector((s) => s.auth);
+  const { loading, error, user } = useAppSelector((s) => s.auth);
 
   const [form, setForm] = useState({
     email: "",
@@ -100,11 +100,6 @@ export default function LoginPage() {
             </div>
 
             <div className="mx-auto w-full max-w-sm py-6">
-              {restorePending ? (
-                <p className="mb-6 rounded border border-slate-200 bg-slate-50/90 px-4 py-3 text-center text-sm text-slate-600 dark:border-slate-600 dark:bg-slate-800/50 dark:text-slate-300">
-                  Checking session…
-                </p>
-              ) : null}
               <div className="mb-6 text-center">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-100 bg-blue-50/90 px-3 py-1 text-xs font-medium text-blue-700 dark:border-blue-500/30 dark:bg-blue-950/50 dark:text-blue-200">
                   <span aria-hidden>✨</span> Nice to see you

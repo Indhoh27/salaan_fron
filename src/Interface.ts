@@ -19,7 +19,7 @@ export type LoginResponse = {
 
 export type AuthState = {
   loading: boolean;
-  /** True until the first GET /auth/me (session restore) finishes. */
+  /** True while GET /auth/me (session restore) is in flight on the dashboard. */
   restorePending: boolean;
   error: string | null;
   user: AuthUser | null;

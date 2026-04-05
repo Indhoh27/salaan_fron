@@ -5,7 +5,7 @@ import { apiFetch, getApiBaseUrl } from "../services/apiClient";
 
 const initialState: AuthState = {
   loading: false,
-  restorePending: true,
+  restorePending: false,
   error: null,
   user: null,
 };

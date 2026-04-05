@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useAppSelector } from "../../Redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../Redux/hooks";
+import { restoreSession } from "../../Redux/authSlice";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
 export default function DashboardPage() {
+  const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
   const restorePending = useAppSelector((s) => s.auth.restorePending);
+  const [restoreDispatched, setRestoreDispatched] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  useEffect(() => {
+    void dispatch(restoreSession());
+    setRestoreDispatched(true);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!mobileNavOpen) return;
@@ -23,7 +31,7 @@ export default function DashboardPage() {
     };
   }, [mobileNavOpen]);
 
-  if (restorePending) {
+  if (!restoreDispatched || restorePending) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 text-sm font-medium text-slate-600 dark:bg-slate-950 dark:text-slate-400">
         Checking session…
