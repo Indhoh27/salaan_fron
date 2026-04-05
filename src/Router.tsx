@@ -1,5 +1,4 @@
 import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
-import Home from "./Pages/Home";
 import LoginPage from "./Pages/LoginPage";
 import DashboardPage from "./Pages/dashboard_components/DashboardPage";
 import Mainpage from "./Pages/dashboard_pages/Mainpage";
