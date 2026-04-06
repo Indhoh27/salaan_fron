@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import * as api from "../../services/salaanApi";
 import type { IncomeExpenseReport, ReportPeriod } from "../../types/domain";
 import PageHeader from "./PageHeader";
-import { btnPrimary, cardClass, inputClass, labelClass, tableWrap, tdClass, thClass } from "./dashboardUi";
+import { btnGhost, btnPrimary, cardClass, inputClass, labelClass, tableWrap, tdClass, thClass } from "./dashboardUi";
 
 function todayYmd(): string {
   const d = new Date();
@@ -19,6 +19,8 @@ export default function ReportsPage() {
   const [report, setReport] = useState<IncomeExpenseReport | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [pdfBusy, setPdfBusy] = useState(false);
 
   const fetchReport = useCallback(async () => {
     setError(null);
@@ -40,16 +42,28 @@ export default function ReportsPage() {
   const fmt = (n: number) =>
     n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+  async function handleDownloadPdf() {
+    setPdfBusy(true);
+    setError(null);
+    try {
+      await api.downloadIncomeExpensePdf({ period, date });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "PDF download failed");
+    } finally {
+      setPdfBusy(false);
+    }
+  }
+
   return (
     <div>
       <PageHeader
         title="Reports"
-        subtitle="Income & expense summary from GET /reports/income-expense — same logic as your backend aggregates."
+        subtitle="Income and expense summary. Export the same report as PDF."
       />
 
-      <div className={`${cardClass} mb-8`}>
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="min-w-[140px]">
+      <div className={`${cardClass} mb-6`}>
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="min-w-[130px]">
             <label className={labelClass} htmlFor="rep-period">
               Period
             </label>
@@ -65,7 +79,7 @@ export default function ReportsPage() {
               <option value="yearly">Yearly</option>
             </select>
           </div>
-          <div className="min-w-[160px]">
+          <div className="min-w-[150px]">
             <label className={labelClass} htmlFor="rep-date">
               Anchor date
             </label>
@@ -79,6 +93,14 @@ export default function ReportsPage() {
           </div>
           <button type="button" className={btnPrimary} onClick={() => void fetchReport()} disabled={loading}>
             {loading ? "Loading…" : "Refresh"}
+          </button>
+          <button
+            type="button"
+            className={btnGhost}
+            onClick={() => void handleDownloadPdf()}
+            disabled={pdfBusy}
+          >
+            {pdfBusy ? "PDF…" : "Download PDF"}
           </button>
         </div>
       </div>

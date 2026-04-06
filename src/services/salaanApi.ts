@@ -8,9 +8,10 @@ import type {
   PurchasePayment,
   ReportPeriod,
   Selling,
+  SellingLoanPayment,
   ShopUser,
 } from "../types/domain";
-import { apiJson, apiVoid } from "./apiClient";
+import { apiFetch, apiJson, apiVoid, readErrorMessage } from "./apiClient";
 
 export function listJobs() {
   return apiJson<Job[]>("/jobs", { method: "GET" });
@@ -74,6 +75,14 @@ export function deleteSelling(id: string) {
   return apiVoid(`/sellings/${encodeURIComponent(id)}`, { method: "DELETE" });
 }
 
+export function createSellingLoanPayment(body: Record<string, string | null | undefined>) {
+  return apiJson<SellingLoanPayment>("/selling-loan-payments", { method: "POST", body: JSON.stringify(body) });
+}
+
+export function deleteSellingLoanPayment(id: string) {
+  return apiVoid(`/selling-loan-payments/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
 export function updateSelling(id: string, body: Record<string, string | null | undefined>) {
   return apiJson<Selling>(`/sellings/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(body) });
 }
@@ -121,6 +130,25 @@ export function updateExpense(id: string, body: { description?: string; amount?:
 export function incomeExpenseReport(params: { period: ReportPeriod; date: string }) {
   const q = new URLSearchParams({ period: params.period, date: params.date });
   return apiJson<IncomeExpenseReport>(`/reports/income-expense?${q}`, { method: "GET" });
+}
+
+export async function downloadIncomeExpensePdf(params: { period: ReportPeriod; date: string }) {
+  const q = new URLSearchParams({ period: params.period, date: params.date });
+  const res = await apiFetch(`/reports/income-expense/pdf?${q}`, { method: "GET" });
+  if (!res.ok) throw new Error(await readErrorMessage(res));
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  try {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `salaan-report-${params.period}-${params.date}.pdf`;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }
 
 export function listUsers() {

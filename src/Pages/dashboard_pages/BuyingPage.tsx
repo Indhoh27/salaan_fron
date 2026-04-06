@@ -8,13 +8,10 @@ import {
   btnDanger,
   btnEdit,
   btnPrimary,
-  cardClass,
   inputClass,
   labelClass,
   tableInputClass,
   tableWrap,
-  tdClass,
-  thClass,
 } from "./dashboardUi";
 
 function parseMoney(v: string): number {
@@ -53,6 +50,15 @@ type PurchaseEditDraft = {
   notes: string;
   status: string;
 };
+
+const buyCard =
+  "rounded border border-slate-200/90 bg-white/90 p-3 shadow-sm dark:border-slate-700/70 dark:bg-slate-900/50 sm:p-4";
+
+const buyTh =
+  "border-b border-slate-200 bg-slate-50/90 px-2 py-1.5 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-400";
+
+const buyTd =
+  "border-b border-slate-100 px-2 py-1.5 text-xs text-slate-800 dark:border-slate-800 dark:text-slate-200";
 
 function statusBadgeClass(status: string): string {
   const u = status.toUpperCase();
@@ -243,35 +249,36 @@ export default function BuyingPage() {
     <div>
       <PageHeader
         title="Buying"
-        subtitle="Record when the shop buys a laptop or accessory from someone. Pay the seller in multiple installments; status updates from agreed total vs payments. Add matching inventory separately on the Inventory page."
+        dense
+        subtitle="Shop buys from sellers; pay in parts. Status follows agreed vs paid. Add inventory on Inventory."
       />
 
       {error ? (
-        <div className="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200">
+        <div className="mb-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200">
           {error}
         </div>
       ) : null}
 
-      <div className="grid gap-2 lg:grid-cols-[1fr,minmax(300px,360px)]">
-        <div className={cardClass}>
-          <h2 className="mb-4 text-lg font-bold text-slate-900 dark:text-white">Buying records</h2>
+      <div className="grid gap-2 xl:grid-cols-[1fr,minmax(240px,280px)]">
+        <div className={buyCard}>
+          <h2 className="mb-2 text-base font-bold text-slate-900 dark:text-white">Records</h2>
           {loading ? (
             <p className="text-sm text-slate-500">Loading…</p>
           ) : rows.length === 0 ? (
             <p className="text-sm text-slate-500">No purchases from sellers yet.</p>
           ) : (
             <div className={tableWrap}>
-              <table className="w-full min-w-[920px] border-collapse">
+              <table className="w-full min-w-[680px] border-collapse">
                 <thead>
                   <tr>
-                    <th className={thClass}>Seller</th>
-                    <th className={thClass}>Item</th>
-                    <th className={thClass}>Agreed</th>
-                    <th className={thClass}>Paid</th>
-                    <th className={thClass}>Remaining</th>
-                    <th className={thClass}>Status</th>
-                    <th className={`${thClass} w-36`}>Pay</th>
-                    <th className={`${thClass} w-28 text-right`}>Actions</th>
+                    <th className={buyTh}>Seller</th>
+                    <th className={buyTh}>Item</th>
+                    <th className={buyTh}>Agreed</th>
+                    <th className={buyTh}>Paid</th>
+                    <th className={buyTh}>Left</th>
+                    <th className={buyTh}>St</th>
+                    <th className={`${buyTh} w-24`}>Pay</th>
+                    <th className={`${buyTh} w-20 text-right`}>…</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -285,7 +292,7 @@ export default function BuyingPage() {
                     return (
                       <Fragment key={p.id}>
                         <tr>
-                          <td className={tdClass}>
+                          <td className={buyTd}>
                             {isEd ? (
                               <div className="space-y-1">
                                 <input
@@ -318,7 +325,7 @@ export default function BuyingPage() {
                               </>
                             )}
                           </td>
-                          <td className={tdClass}>
+                          <td className={buyTd}>
                             {isEd ? (
                               <div className="space-y-1">
                                 <input
@@ -350,7 +357,7 @@ export default function BuyingPage() {
                               itemLabel(p)
                             )}
                           </td>
-                          <td className={tdClass}>
+                          <td className={buyTd}>
                             {isEd ? (
                               <input
                                 className={tableInputClass}
@@ -363,9 +370,9 @@ export default function BuyingPage() {
                               p.agreed_price
                             )}
                           </td>
-                          <td className={`${tdClass} font-mono text-sm`}>{paid.toFixed(2)}</td>
-                          <td className={`${tdClass} font-mono text-sm`}>{remaining.toFixed(2)}</td>
-                          <td className={tdClass}>
+                          <td className={`${buyTd} font-mono`}>{paid.toFixed(2)}</td>
+                          <td className={`${buyTd} font-mono`}>{remaining.toFixed(2)}</td>
+                          <td className={buyTd}>
                             {isEd ? (
                               <select
                                 className={tableInputClass}
@@ -388,10 +395,10 @@ export default function BuyingPage() {
                               </span>
                             )}
                           </td>
-                          <td className={tdClass}>
+                          <td className={buyTd}>
                             <button
                               type="button"
-                              className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline dark:text-blue-400"
+                              className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400"
                               onClick={() => setExpandedId(isOpen ? null : p.id)}
                             >
                               {isOpen ? (
@@ -405,7 +412,7 @@ export default function BuyingPage() {
                               )}
                             </button>
                           </td>
-                          <td className={`${tdClass} text-right`}>
+                          <td className={`${buyTd} text-right`}>
                             {isEd ? (
                               <div className="flex flex-wrap justify-end gap-1">
                                 <button
@@ -451,20 +458,20 @@ export default function BuyingPage() {
                         </tr>
                         {isOpen ? (
                           <tr key={`${p.id}-detail`} className="bg-slate-50/90 dark:bg-slate-900/50">
-                            <td colSpan={8} className="px-4 py-4">
-                              <div className="grid gap-4 lg:grid-cols-2">
+                            <td colSpan={8} className="px-2 py-2 sm:px-3 sm:py-3">
+                              <div className="grid gap-2 sm:gap-3 lg:grid-cols-2">
                                 <div>
-                                  <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-200">
-                                    Payments to seller
+                                  <h3 className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-600 dark:text-slate-400">
+                                    Paid seller
                                   </h3>
                                   {(p.payments ?? []).length === 0 ? (
                                     <p className="text-xs text-slate-500">No payments yet.</p>
                                   ) : (
-                                    <ul className="space-y-2 text-sm">
+                                    <ul className="space-y-1.5 text-xs">
                                       {(p.payments ?? []).map((pay) => (
                                         <li
                                           key={pay.id}
-                                          className="flex flex-wrap items-center justify-between gap-2 rounded border border-slate-200/80 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-800/50"
+                                          className="flex flex-wrap items-center justify-between gap-1.5 rounded border border-slate-200/80 bg-white px-2 py-1.5 dark:border-slate-600 dark:bg-slate-800/50"
                                         >
                                           <span className="font-mono font-semibold">{pay.amount}</span>
                                           <span className="text-xs text-slate-500">
@@ -483,19 +490,19 @@ export default function BuyingPage() {
                                     </ul>
                                   )}
                                 </div>
-                                <div className="rounded-lg border border-blue-200/80 bg-blue-50/80 p-3 dark:border-blue-900/40 dark:bg-blue-950/30">
-                                  <h3 className="mb-2 text-sm font-bold text-blue-900 dark:text-blue-200">
-                                    Record another payment
+                                <div className="rounded-lg border border-blue-200/80 bg-blue-50/80 p-2 sm:p-2.5 dark:border-blue-900/40 dark:bg-blue-950/30">
+                                  <h3 className="mb-1 text-xs font-bold uppercase tracking-wide text-blue-900 dark:text-blue-200">
+                                    Add payment
                                   </h3>
-                                  <div className="flex flex-col gap-2">
+                                  <div className="flex flex-col gap-1.5">
                                     <input
-                                      className={inputClass}
+                                      className={`${inputClass} py-2 text-xs`}
                                       placeholder="Amount"
                                       value={payAmount}
                                       onChange={(e) => setPayAmount(e.target.value)}
                                     />
                                     <select
-                                      className={inputClass}
+                                      className={`${inputClass} py-2 text-xs`}
                                       value={payMethod}
                                       onChange={(e) => setPayMethod(e.target.value)}
                                     >
@@ -506,14 +513,14 @@ export default function BuyingPage() {
                                       ))}
                                     </select>
                                     <input
-                                      className={inputClass}
+                                      className={`${inputClass} py-2 text-xs`}
                                       placeholder="Note (optional)"
                                       value={payNotes}
                                       onChange={(e) => setPayNotes(e.target.value)}
                                     />
                                     <button
                                       type="button"
-                                      className={`${btnPrimary} w-full justify-center`}
+                                      className={`${btnPrimary} w-full justify-center py-2 text-xs`}
                                       disabled={paySaving || !userId}
                                       onClick={() => void handleAddPayment(p.id)}
                                     >
@@ -539,13 +546,13 @@ export default function BuyingPage() {
           )}
         </div>
 
-        <div className={cardClass}>
-          <h2 className="mb-4 text-lg font-bold text-slate-900 dark:text-white">New buying record</h2>
-          <form className="flex flex-col gap-3" onSubmit={handleCreate}>
+        <div className={buyCard}>
+          <h2 className="mb-2 text-base font-bold text-slate-900 dark:text-white">New record</h2>
+          <form className="flex flex-col gap-2" onSubmit={handleCreate}>
             <div>
               <label className={labelClass}>Seller name</label>
               <input
-                className={inputClass}
+                className={`${inputClass} py-2 text-xs sm:text-sm`}
                 value={sellerName}
                 onChange={(e) => setSellerName(e.target.value)}
                 required
@@ -554,7 +561,7 @@ export default function BuyingPage() {
             <div>
               <label className={labelClass}>Seller phone</label>
               <input
-                className={inputClass}
+                className={`${inputClass} py-2 text-xs sm:text-sm`}
                 value={sellerPhone}
                 onChange={(e) => setSellerPhone(e.target.value)}
                 required
@@ -562,7 +569,7 @@ export default function BuyingPage() {
             </div>
             <div>
               <span className={labelClass}>What you bought</span>
-              <div className="mt-1 flex flex-wrap gap-3 text-sm">
+              <div className="mt-0.5 flex flex-wrap gap-2 text-xs">
                 <label className="flex cursor-pointer items-center gap-2">
                   <input
                     type="radio"
@@ -596,7 +603,7 @@ export default function BuyingPage() {
               <div>
                 <label className={labelClass}>Laptop (description / model)</label>
                 <input
-                  className={inputClass}
+                  className={`${inputClass} py-2 text-xs sm:text-sm`}
                   value={laptopName}
                   onChange={(e) => setLaptopName(e.target.value)}
                   required
@@ -607,7 +614,7 @@ export default function BuyingPage() {
               <div>
                 <label className={labelClass}>Accessory name</label>
                 <input
-                  className={inputClass}
+                  className={`${inputClass} py-2 text-xs sm:text-sm`}
                   value={accessoryName}
                   onChange={(e) => setAccessoryName(e.target.value)}
                   required
@@ -618,7 +625,7 @@ export default function BuyingPage() {
               <div>
                 <label className={labelClass}>Description</label>
                 <input
-                  className={inputClass}
+                  className={`${inputClass} py-2 text-xs sm:text-sm`}
                   value={itemDescription}
                   onChange={(e) => setItemDescription(e.target.value)}
                   required
@@ -628,7 +635,7 @@ export default function BuyingPage() {
             <div>
               <label className={labelClass}>Total agreed to pay seller</label>
               <input
-                className={inputClass}
+                className={`${inputClass} py-2 text-xs sm:text-sm`}
                 value={agreedPrice}
                 onChange={(e) => setAgreedPrice(e.target.value)}
                 required
@@ -637,12 +644,16 @@ export default function BuyingPage() {
             <div>
               <label className={labelClass}>Notes (optional)</label>
               <textarea
-                className={`${inputClass} min-h-[80px]`}
+                className={`${inputClass} min-h-[56px] py-2 text-xs sm:text-sm`}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
               />
             </div>
-            <button type="submit" className={`${btnPrimary} mt-1 w-full justify-center`} disabled={saving || !userId}>
+            <button
+              type="submit"
+              className={`${btnPrimary} mt-0.5 w-full justify-center py-2 text-xs sm:text-sm`}
+              disabled={saving || !userId}
+            >
               {saving ? "Saving…" : "Add record"}
             </button>
           </form>

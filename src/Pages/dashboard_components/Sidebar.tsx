@@ -14,6 +14,7 @@ import {
   FaUsers,
   FaHandHoldingDollar,
   FaFileInvoiceDollar,
+  FaCircleUser,
 } from "react-icons/fa6";
 import { useAppDispatch, useAppSelector } from "../../Redux/hooks";
 import { logoutUser } from "../../Redux/authSlice";
@@ -76,6 +77,10 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
   }, [theme]);
 
   const isDark = useMemo(() => theme === "dark", [theme]);
+  const displayName = user?.fullName?.trim() || user?.email || "User";
+  const displayRole = user?.role === "ADMIN" ? "Administrator" : "Staff";
+  const avatarSeed = displayName.replace(/\s+/g, " ").trim();
+  const avatarInitial = avatarSeed.charAt(0).toUpperCase() || "U";
 
   const handleLogout = async () => {
     onNavigate?.();
@@ -136,13 +141,24 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
       </nav>
 
       <div className="border-t border-slate-200/70 p-4 dark:border-slate-700/60">
-        <div className="mb-3 rounded border border-slate-200/80 bg-white/90 p-3 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-          <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">
-            {user?.fullName ?? user?.email ?? "User"}
-          </p>
-          <p className="truncate text-xs font-medium text-slate-500 dark:text-slate-400">
-            {user?.role === "ADMIN" ? "Administrator" : "Staff"}
-          </p>
+        <div className="mb-3 rounded border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-3 shadow-sm dark:border-slate-700/50 dark:from-slate-800/80 dark:to-slate-900/70">
+          <div className="flex items-center gap-3">
+            <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-sm font-bold text-white shadow-md shadow-blue-600/30">
+              {avatarInitial}
+              <FaCircleUser className="pointer-events-none absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-white text-blue-600 dark:bg-slate-900 dark:text-blue-300" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">{displayName}</p>
+              <div className="mt-1 flex items-center gap-2">
+                <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-700 dark:border-blue-800/60 dark:bg-blue-950/50 dark:text-blue-300">
+                  {displayRole}
+                </span>
+                {user?.email ? (
+                  <span className="truncate text-[11px] text-slate-500 dark:text-slate-400">{user.email}</span>
+                ) : null}
+              </div>
+            </div>
+          </div>
         </div>
         <button
           type="button"

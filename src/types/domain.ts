@@ -47,6 +47,19 @@ export type Accessory = {
   updatedAt: string;
 };
 
+/** Partial payment from customer toward a sale on loan. */
+export type SellingLoanPayment = {
+  id: string;
+  selling_id: string;
+  amount: string;
+  payment_method: string | null;
+  paid_at: string;
+  notes: string | null;
+  user_id: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Selling = {
   id: string;
   laptop_id: string | null;
@@ -60,6 +73,7 @@ export type Selling = {
   user_id: string;
   createdAt: string;
   updatedAt: string;
+  loanPayments?: SellingLoanPayment[];
 };
 
 /** Shop buys stock from a person; pay them over one or more `PurchasePayment` rows. */
